@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Alphabet Number Converter</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f7;color:#111;display:flex;justify-content:center;min-height:100vh}
+.app{width:100%;max-width:520px;padding:28px 18px}
+h1{font-size:28px;text-align:center;margin:10px 0 6px}
+.sub{text-align:center;color:#666;margin-bottom:24px}
+label{font-weight:600;display:block;margin:14px 0 8px}
+textarea,input{width:100%;border:1px solid #d1d1d6;border-radius:14px;background:white;padding:16px;font-size:22px;outline:none}
+textarea{min-height:110px;resize:none}
+.result{margin-top:10px;font-size:30px;font-weight:700;letter-spacing:2px;word-break:break-all;min-height:64px}
+button{border:0;border-radius:13px;padding:14px 18px;font-size:17px;font-weight:600;margin-top:12px;cursor:pointer}
+.copy{width:100%;background:#111;color:white}
+.clear{width:100%;background:#e5e5ea;color:#111}
+.map{margin-top:22px;background:white;border-radius:16px;padding:16px}
+.map b{display:block;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.cell{background:#f2f2f7;border-radius:9px;padding:9px;text-align:center;font-weight:600}
+.status{text-align:center;color:#2d7a3e;height:22px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Alphabet → Number</h1>
+<div class="sub">Type letters and get numbers instantly</div>
+
+<label for="text">Alphabet</label>
+<textarea id="text" placeholder="Example: LASER" autofocus></textarea>
+
+<label>Number</label>
+<div id="result" class="result">—</div>
+<button class="copy" onclick="copyResult()">Copy Number</button>
+<button class="clear" onclick="clearAll()">Clear</button>
+
+<div class="map">
+<b>Current Mapping</b>
+<div class="grid">
+<div class="cell">L = 1</div><div class="cell">A = 2</div><div class="cell">S = 3</div><div class="cell">E = 4</div><div class="cell">R = 5</div>
+<div class="cell">C = 6</div><div class="cell">U = 7</div><div class="cell">T = 8</div><div class="cell">I = 9</div><div class="cell">X = 0</div>
+</div>
+</div>
+<div id="status" class="status"></div>
+</div>
+<script>
+const map={L:"1",A:"2",S:"3",E:"4",R:"5",C:"6",U:"7",T:"8",I:"9",X:"0"};
+const text=document.getElementById("text"), result=document.getElementById("result"), status=document.getElementById("status");
+function convert(){
+  const v=text.value.toUpperCase();
+  text.value=v;
+  result.textContent=[...v].map(c=>map[c]??c).join("") || "—";
+}
+text.addEventListener("input",convert);
+async function copyResult(){
+  const v=result.textContent==="—"?"":result.textContent;
+  if(!v)return;
+  try{await navigator.clipboard.writeText(v);}
+  catch(e){const t=document.createElement("textarea");t.value=v;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();}
+  status.textContent="Copied!";
+  setTimeout(()=>status.textContent="",1200);
+}
+function clearAll(){text.value="";result.textContent="—";text.focus();status.textContent=""}
+</script>
+</body>
+</html>
