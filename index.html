@@ -1,71 +1,167 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Alphabet Number Converter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>HARIKUPNYC Converter</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f7;color:#111;display:flex;justify-content:center;min-height:100vh}
-.app{width:100%;max-width:520px;padding:28px 18px}
-h1{font-size:28px;text-align:center;margin:10px 0 6px}
-.sub{text-align:center;color:#666;margin-bottom:24px}
-label{font-weight:600;display:block;margin:14px 0 8px}
-textarea,input{width:100%;border:1px solid #d1d1d6;border-radius:14px;background:white;padding:16px;font-size:22px;outline:none}
-textarea{min-height:110px;resize:none}
-.result{margin-top:10px;font-size:30px;font-weight:700;letter-spacing:2px;word-break:break-all;min-height:64px}
-button{border:0;border-radius:13px;padding:14px 18px;font-size:17px;font-weight:600;margin-top:12px;cursor:pointer}
-.copy{width:100%;background:#111;color:white}
-.clear{width:100%;background:#e5e5ea;color:#111}
-.map{margin-top:22px;background:white;border-radius:16px;padding:16px}
-.map b{display:block;margin-bottom:10px}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
-.cell{background:#f2f2f7;border-radius:9px;padding:9px;text-align:center;font-weight:600}
-.status{text-align:center;color:#2d7a3e;height:22px;margin-top:8px}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #f2f2f7;
+  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+main {
+  max-width: 520px;
+  margin: auto;
+  padding: 26px 18px;
+}
+h1 { text-align: center; font-size: 29px; }
+.sub { text-align: center; color: #666; margin-bottom: 22px; }
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+label { font-weight: bold; display: block; margin-bottom: 9px; }
+textarea {
+  width: 100%;
+  height: 105px;
+  border: 1px solid #ccc;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 23px;
+  text-transform: uppercase;
+}
+.result {
+  min-height: 65px;
+  font-size: 32px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+  padding: 8px 0;
+}
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 13px;
+  padding: 15px;
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: bold;
+}
+.primary { background: #111; color: white; }
+.secondary { background: #e5e5ea; color: #111; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+}
+.cell {
+  background: #f2f2f7;
+  border-radius: 9px;
+  padding: 10px 2px;
+  text-align: center;
+  font-weight: bold;
+}
+.status { text-align: center; color: green; margin-top: 10px; }
+[hidden] { display: none !important; }
 </style>
 </head>
 <body>
-<div class="app">
-<h1>Alphabet → Number</h1>
-<div class="sub">Type letters and get numbers instantly</div>
+<main>
+  <h1>Letter → Number</h1>
+  <div class="sub">HARIKUPNYC Code</div>
 
-<label for="text">Alphabet</label>
-<textarea id="text" placeholder="Example: LASER" autofocus></textarea>
+  <section class="card">
+    <label for="input">Enter letters</label>
+    <textarea id="input" placeholder="Type here..." autocapitalize="characters"></textarea>
+  </section>
 
-<label>Number</label>
-<div id="result" class="result">—</div>
-<button class="copy" onclick="copyResult()">Copy Number</button>
-<button class="clear" onclick="clearAll()">Clear</button>
+  <section class="card">
+    <label>Number</label>
+    <div id="output" class="result">—</div>
+    <button class="primary" id="copy">Copy Number</button>
+    <button class="secondary" id="clear">Clear</button>
+    <div id="status" class="status"></div>
+  </section>
 
-<div class="map">
-<b>Current Mapping</b>
-<div class="grid">
-<div class="cell">L = 1</div><div class="cell">A = 2</div><div class="cell">S = 3</div><div class="cell">E = 4</div><div class="cell">R = 5</div>
-<div class="cell">C = 6</div><div class="cell">U = 7</div><div class="cell">T = 8</div><div class="cell">I = 9</div><div class="cell">X = 0</div>
-</div>
-</div>
-<div id="status" class="status"></div>
-</div>
+  <button class="secondary" id="toggle">Unhide Mapping</button>
+
+  <section class="card" id="mapping" hidden>
+    <label>Your Letter Mapping</label>
+    <div id="grid" class="grid"></div>
+  </section>
+</main>
+
 <script>
-const map={L:"1",A:"2",S:"3",E:"4",R:"5",C:"6",U:"7",T:"8",I:"9",X:"0"};
-const text=document.getElementById("text"), result=document.getElementById("result"), status=document.getElementById("status");
-function convert(){
-  const v=text.value.toUpperCase();
-  text.value=v;
-  result.textContent=[...v].map(c=>map[c]??c).join("") || "—";
+const map = {
+  H: "5",
+  A: "8",
+  R: "2",
+  I: "0",
+  K: "7",
+  U: "3",
+  P: "9",
+  N: "1",
+  Y: "6",
+  C: "4"
+};
+
+const input = document.getElementById("input");
+const output = document.getElementById("output");
+const status = document.getElementById("status");
+const mapping = document.getElementById("mapping");
+const toggle = document.getElementById("toggle");
+const grid = document.getElementById("grid");
+
+Object.entries(map).forEach(([letter, number]) => {
+  const cell = document.createElement("div");
+  cell.className = "cell";
+  cell.textContent = letter + " = " + number;
+  grid.appendChild(cell);
+});
+
+function convert() {
+  const letters = input.value.toUpperCase();
+  input.value = letters;
+  output.textContent =
+    [...letters].map(letter => map[letter] ?? letter).join("") || "—";
 }
-text.addEventListener("input",convert);
-async function copyResult(){
-  const v=result.textContent==="—"?"":result.textContent;
-  if(!v)return;
-  try{await navigator.clipboard.writeText(v);}
-  catch(e){const t=document.createElement("textarea");t.value=v;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();}
-  status.textContent="Copied!";
-  setTimeout(()=>status.textContent="",1200);
-}
-function clearAll(){text.value="";result.textContent="—";text.focus();status.textContent=""}
+
+input.addEventListener("input", convert);
+
+document.getElementById("copy").addEventListener("click", async () => {
+  if (output.textContent === "—") return;
+  try {
+    await navigator.clipboard.writeText(output.textContent);
+  } catch (error) {
+    const temp = document.createElement("textarea");
+    temp.value = output.textContent;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    temp.remove();
+  }
+  status.textContent = "Copied!";
+  setTimeout(() => status.textContent = "", 1500);
+});
+
+document.getElementById("clear").addEventListener("click", () => {
+  input.value = "";
+  convert();
+  input.focus();
+});
+
+toggle.addEventListener("click", () => {
+  mapping.hidden = !mapping.hidden;
+  toggle.textContent = mapping.hidden ? "Unhide Mapping" : "Hide Mapping";
+});
+
+convert();
 </script>
 </body>
 </html>
