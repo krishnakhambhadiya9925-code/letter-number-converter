@@ -4,97 +4,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#111111">
-<title>HARIKUPNYC Converter</title>
+<meta name="theme-color" content="#080b18">
+<title>HARIKUPNYC | Letter to Number</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #080b18;
+  --card: #12182b;
+  --border: #283453;
+  --blue: #5b8cff;
+  --purple: #a66bff;
+  --text: #f4f6ff;
+  --muted: #9aa7c7;
+}
+
 body {
   margin: 0;
-  background: #f2f2f7;
-  color: #111;
-  font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 15% 0%, #202e61 0, transparent 42%),
+    radial-gradient(ellipse at 95% 25%, #341b58 0, transparent 35%),
+    var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
+
 main {
-  max-width: 520px;
-  margin: auto;
-  padding: 26px 18px;
-}
-h1 { text-align: center; font-size: 29px; }
-.sub { text-align: center; color: #666; margin-bottom: 22px; }
-.card {
-  background: white;
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 14px;
-}
-label { font-weight: bold; display: block; margin-bottom: 9px; }
-textarea {
   width: 100%;
-  height: 105px;
-  border: 1px solid #ccc;
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 23px;
-  text-transform: uppercase;
+  max-width: 560px;
+  margin: 0 auto;
 }
-.result {
-  min-height: 65px;
-  font-size: 32px;
-  font-weight: bold;
-  overflow-wrap: anywhere;
-  padding: 8px 0;
+
+header {
+  text-align: center;
+  padding: 20px 0 28px;
 }
-button {
-  width: 100%;
-  border: 0;
-  border-radius: 13px;
-  padding: 15px;
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  margin-bottom: 18px;
+  border-radius: 22px;
+  font-size: 30px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  box-shadow: 0 0 38px #6a6bff55;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(28px, 7vw, 38px);
+  letter-spacing: -1.3px;
+}
+
+h1 span {
+  background: linear-gradient(90deg, #75a5ff, #c09aff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
   margin-top: 10px;
-  font-size: 17px;
-  font-weight: bold;
 }
-.primary { background: #111; color: white; }
-.secondary { background: #e5e5ea; color: #111; }
+
+.pill {
+  display: inline-block;
+  margin-top: 17px;
+  padding: 7px 12px;
+  border: 1px solid #38466c;
+  border-radius: 30px;
+  color: #b9caff;
+  background: #18213b;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.card {
+  padding: 22px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #151c31ee, #101527ee);
+  box-shadow: 0 14px 40px #00000020;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+label, .section-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 115px;
+  resize: vertical;
+  padding: 16px;
+  border: 1px solid #354365;
+  border-radius: 15px;
+  outline: none;
+  color: white;
+  background: #0a1020;
+  font: inherit;
+  font-size: 21px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px #5b8cff22;
+}
+
+textarea::placeholder {
+  color: #697797;
+}
+
+.result-box {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  overflow-wrap: anywhere;
+  border: 1px solid #354365;
+  border-radius: 15px;
+  background: #0a1020;
+}
+
+#output {
+  width: 100%;
+  font-size: clamp(27px, 7vw, 38px);
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: 1px;
+  overflow-wrap: anywhere;
+  background: linear-gradient(90deg, #83b2ff, #c49aff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+button {
+  min-height: 49px;
+  padding: 13px 15px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: transform .15s, filter .15s, border-color .15s;
+}
+
+button:hover {
+  filter: brightness(1.12);
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+.primary {
+  color: white;
+  background: linear-gradient(100deg, #477dff, #9060f5);
+  box-shadow: 0 5px 22px #705eff30;
+}
+
+.secondary {
+  color: #dce4ff;
+  border-color: #34415f;
+  background: #202a43;
+}
+
+.mapping-toggle {
+  width: 100%;
+  margin-bottom: 16px;
+  color: #d9c8ff;
+  border-color: #594180;
+  background: #211936;
+}
+
+#mapping[hidden] {
+  display: none !important;
+}
+
+.mapping-description {
+  margin: 8px 0 17px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 7px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
 }
+
 .cell {
-  background: #f2f2f7;
-  border-radius: 9px;
-  padding: 10px 2px;
+  padding: 13px 2px;
   text-align: center;
-  font-weight: bold;
+  border: 1px solid #344365;
+  border-radius: 12px;
+  background: #0b1223;
 }
-.status { text-align: center; color: green; margin-top: 10px; }
-[hidden] { display: none !important; }
+
+.cell strong {
+  display: block;
+  color: #91b5ff;
+  font-size: 19px;
+}
+
+.cell span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status {
+  min-height: 18px;
+  margin-top: 12px;
+  color: #82e6bd;
+  text-align: center;
+  font-size: 13px;
+}
+
+footer {
+  padding: 12px 0 0;
+  color: #7f8baa;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@media (max-width: 380px) {
+  .card {
+    padding: 17px;
+  }
+
+  .grid {
+    gap: 6px;
+  }
+
+  .cell {
+    padding: 10px 1px;
+  }
+}
 </style>
 </head>
+
 <body>
 <main>
-  <h1>Letter → Number</h1>
-  <div class="sub">HARIKUPNYC Code</div>
+  <header>
+    <div class="logo">H↔N</div>
+    <h1>Letter <span>→ Number</span></h1>
+    <div class="subtitle">Your personal code converter</div>
+    <div class="pill">✦ HARIKUPNYC CODE ✦</div>
+  </header>
 
   <section class="card">
-    <label for="input">Enter letters</label>
-    <textarea id="input" placeholder="Type here..." autocapitalize="characters"></textarea>
+    <div class="label-row">
+      <label for="input">Enter your letters</label>
+      <span class="hint">LIVE CONVERSION</span>
+    </div>
+    <textarea id="input" placeholder="Type HARIKUPNYC..." autocapitalize="characters" spellcheck="false"></textarea>
   </section>
 
   <section class="card">
-    <label>Number</label>
-    <div id="output" class="result">—</div>
-    <button class="primary" id="copy">Copy Number</button>
-    <button class="secondary" id="clear">Clear</button>
-    <div id="status" class="status"></div>
+    <div class="label-row">
+      <span class="section-title">Your number</span>
+      <span class="hint">OUTPUT</span>
+    </div>
+
+    <div class="result-box">
+      <div id="output">—</div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="copy">Copy number</button>
+      <button class="secondary" id="clear">Clear</button>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
   </section>
 
-  <button class="secondary" id="toggle">Unhide Mapping</button>
+  <button class="mapping-toggle" id="toggle" aria-expanded="false" aria-controls="mapping">
+    ◈ &nbsp; Unhide Mapping
+  </button>
 
   <section class="card" id="mapping" hidden>
-    <label>Your Letter Mapping</label>
-    <div id="grid" class="grid"></div>
+    <div class="section-title">Your secret mapping</div>
+    <p class="mapping-description">
+      Each letter has its own number. Keep your code private.
+    </p>
+    <div class="grid" id="grid"></div>
   </section>
+
+  <footer>
+    HARIKUPNYC CONVERTER<br>
+    Made for your personal code ✦
+  </footer>
 </main>
 
 <script>
@@ -121,21 +359,35 @@ const grid = document.getElementById("grid");
 Object.entries(map).forEach(([letter, number]) => {
   const cell = document.createElement("div");
   cell.className = "cell";
-  cell.textContent = letter + " = " + number;
+
+  const letterText = document.createElement("strong");
+  letterText.textContent = letter;
+
+  const numberText = document.createElement("span");
+  numberText.textContent = "＝ " + number;
+
+  cell.append(letterText, numberText);
   grid.appendChild(cell);
 });
 
 function convert() {
   const letters = input.value.toUpperCase();
   input.value = letters;
+
   output.textContent =
     [...letters].map(letter => map[letter] ?? letter).join("") || "—";
+
+  status.textContent = "";
 }
 
 input.addEventListener("input", convert);
 
 document.getElementById("copy").addEventListener("click", async () => {
-  if (output.textContent === "—") return;
+  if (output.textContent === "—") {
+    status.textContent = "Enter some letters first.";
+    return;
+  }
+
   try {
     await navigator.clipboard.writeText(output.textContent);
   } catch (error) {
@@ -143,22 +395,31 @@ document.getElementById("copy").addEventListener("click", async () => {
     temp.value = output.textContent;
     document.body.appendChild(temp);
     temp.select();
-    document.execCommand("copy");
+    const copied = document.execCommand("copy");
     temp.remove();
+
+    if (!copied) {
+      status.textContent = "Copy failed. Please select the number.";
+      return;
+    }
   }
-  status.textContent = "Copied!";
-  setTimeout(() => status.textContent = "", 1500);
+
+  status.textContent = "✓ Number copied!";
 });
 
 document.getElementById("clear").addEventListener("click", () => {
   input.value = "";
   convert();
   input.focus();
+  status.textContent = "Cleared.";
 });
 
 toggle.addEventListener("click", () => {
   mapping.hidden = !mapping.hidden;
-  toggle.textContent = mapping.hidden ? "Unhide Mapping" : "Hide Mapping";
+  toggle.textContent = mapping.hidden
+    ? "◈   Unhide Mapping"
+    : "◈   Hide Mapping";
+  toggle.setAttribute("aria-expanded", String(!mapping.hidden));
 });
 
 convert();
